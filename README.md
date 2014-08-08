@@ -1,6 +1,7 @@
 # stripe-clj
+[![Build Status](https://travis-ci.org/dyba/stripe-clj.svg?branch=master)](https://travis-ci.org/dyba/stripe-clj)
 
-A Clojure library designed to ... well, that part is up to you.
+A Stripe API for Clojure
 
 ## Usage
 
