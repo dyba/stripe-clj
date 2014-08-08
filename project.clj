@@ -7,4 +7,5 @@
                  [com.stripe/stripe-java "1.15.1"]
                  [clj-http "0.9.2"]
                  [cheshire "5.3.1"]]
-  :profiles {:dev {:dependencies [[midje "1.6.3"]]}})
+  :profiles {:dev {:dependencies [[midje "1.6.3"]]
+                   :plugins [[lein-midje "3.1.3"]]}})
