@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [com.stripe/stripe-java "1.15.1"]
                  [clj-http "0.9.2"]
-                 [cheshire "5.3.1"]]
+                 [cheshire "5.3.1"]
+                 [prismatic/schema "0.2.6"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]]
                    :plugins [[lein-midje "3.1.3"]]}})

@@ -11,3 +11,4 @@ pom.xml.asc
 # Ignore editor-generated files
 *~
 *.swp
+**/*/\#
