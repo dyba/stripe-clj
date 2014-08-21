@@ -20,3 +20,8 @@
   "Converts a spear-cased keyword to a string"
   [k]
   (snake-case (name k)))
+
+(comment (defn delete-operation
+           [path]
+           (fn [& opts]
+             (api-request :delete path opts))))

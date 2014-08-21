@@ -2,10 +2,12 @@
   (:require [clj-http.client :as client]
             [clojure.string :as str]
             [cheshire.core :refer :all]
-            [stripe-clj.utils :refer :all]))
+            [stripe-clj.utils :refer :all])
+  (:use [clojure.walk :only [stringify-keys]]))
 
 (def ^:dynamic *stripe-api-key* "sk_test_BQokikJOvBiI2HlWgH4olfQ2")
 (def stripe-base-url "https://api.stripe.com")
+
 
 (defn api-request
   [method path & [opts]]
@@ -14,11 +16,6 @@
           (merge {:method method :url url :basic-auth [(str *stripe-api-key* ":")]} opts))
       :body
       (parse-string str->spear-cased-keyword))))
-
-(defn stringify-keys
-  [m]
-  (let [stringify-key (fn [m] {(name (first m)) (second m)})]
-    (apply merge (map stringify-key m))))
 
 (defn create
   ([] (create {}))
