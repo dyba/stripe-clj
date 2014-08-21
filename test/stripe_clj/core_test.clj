@@ -7,6 +7,7 @@
             [stripe-clj.plan :as plan]
             [stripe-clj.card :as card]
             [stripe-clj.subscription :as subscription]
+            [stripe-clj.utils :refer :all]
             [ring.middleware.params :refer (wrap-params)]
             [clojure.string :as s]
             [cheshire.generate :refer [add-encoder]])
@@ -100,7 +101,7 @@
                                                             :headers {}
                                                             :body (generate-string
                                                                     {"exp_month" exp-month
-                                                                     "exp_year" exp-year})})}        
+                                                                     "exp_year" exp-year})})}
       (fact "creates a new card"
         (let [customer (customer/create)
               params {:card {:number "4242424242424242" :exp-month exp-month :exp-year exp-year}}
