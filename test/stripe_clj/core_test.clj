@@ -6,6 +6,7 @@
             [stripe-clj.customer :as customer]
             [stripe-clj.plan :as plan]
             [stripe-clj.card :as card]
+            [stripe-clj.token :as token]
             [stripe-clj.subscription :as subscription]
             [stripe-clj.utils :refer :all]
             [ring.middleware.params :refer (wrap-params)]
@@ -43,6 +44,26 @@
   (fact "retrieves an existing customer"
     (let [customer-id (:id (create-customer))]
       (:id (retrieve-customer customer-id)) => customer-id)))
+
+(facts "Tokens Endpoint"
+  (with-fake-routes
+    {"https://api.stripe.com/v1/tokens" {:post (fn [req]
+                                                 {:status 200
+                                                  :headers {}
+                                                  :body (generate-string
+                                                          {:card {:id "card_1234567890"}})})}
+     #"https://api.stripe.com/v1/tokens/(.+)" {:get (fn [req]
+                                                     {:status 200
+                                                      :headers {}
+                                                      :body (generate-string
+                                                              {:id "tok_1234567890"})})}}
+    (fact "creates a new card token"
+      (let [params {:card {:number "4242424242424242" :exp-month "12" :exp-year "2015" :cvc "123"}}
+            token (token/create params)]
+        (re-find #"card_.*" (get-in token [:card :id])) => "card_1234567890"))
+    (fact "retrieves an existing token"
+      (let [token-id "tok_1234567890"]
+        (:id (token/retrieve "tok_1234567890")) => token-id))))
 
 (facts "Customers Endpoint - New API"
   (with-fake-routes
