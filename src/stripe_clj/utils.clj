@@ -1,7 +1,8 @@
 (ns stripe-clj.utils
   (:require [clojure.string :as str]
             [clj-http.client :as client]
-            [cheshire.core :refer :all]))
+            [cheshire.core :refer :all])
+  (:use [clojure.walk :only [postwalk]]))
 
 ;; General utilities
 
@@ -24,6 +25,11 @@
   "Converts a spear-cased keyword to a string"
   [k]
   (snake-case (name k)))
+
+(defn stripeify-keys
+  [m]
+  (let [f (fn [[k v]] (if (keyword? k) [(snake-case (name k)) v] [k v]))]
+    (postwalk (fn [x] (if (map? x) (into {} (map f x)) x)) m)))
 
 ;; HTTP utilities
 
