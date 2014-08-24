@@ -40,15 +40,22 @@
 (defn api-action
   [method path & [opts]]
   (let [url (str/join "/" [stripe-base-url "v1" path])]
-    (client/request
-      (merge {:method method :url url :basic-auth [(str *stripe-api-key* ":")]} opts))))
+    (try
+      [true (client/request
+              (merge {:method method
+                      :url url
+                      :basic-auth [(str *stripe-api-key* ":")]}
+                opts))]
+      (catch Exception e
+        (let [error (-> e .getData :object :body)]
+          [false error])))))
 
 (defn api-request
   [method path & [opts]]
-  (->
-    (api-action method path opts)
-    :body
-    (parse-string str->spear-cased-keyword)))
+  (let [[valid? response] (api-action method path opts)]
+    (if valid?
+      (-> response :body (parse-string str->spear-cased-keyword))
+      (parse-string response))))
 
 (comment (defn delete-operation
            [path]
