@@ -23,4 +23,3 @@
   [customer-id card-id & opts]
   (let [path (str "customers/" customer-id "cards/" card-id)]
     (api-request :delete path opts)))
-

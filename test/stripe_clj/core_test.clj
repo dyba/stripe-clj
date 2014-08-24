@@ -130,16 +130,69 @@
           (:exp_month card) => (:exp-month params)
           (:exp_year card) => (:exp-year params))))))
 
-;; TODO: Implement Plans Endpoint Tests
-(comment (facts "Plans Endpoint"
-           (fact "creates a new plan"
-             (let [params {:id "newbie" :amount 1000 :currency "usd" :interval "month" :name "Newbie Plan"}
-                   plan (plan/create params)]
-               (:id plan) => (:id params)
-               (:amount plan) => (:amount params)
-               (:currency plan) => (:currency params)
-               (:name plan) => (:name params)))
-           (fact "deletes an existing plan")))
+(facts "Plans Endpoint"
+  (with-fake-routes
+    {"https://api.stripe.com/v1/plans" {:post (fn [req]
+                                                {:status 200
+                                                 :headers {}
+                                                 :body (generate-string
+                                                         {:interval "month"
+                                                          :name "Newbie Plan"
+                                                          :amount 1000
+                                                          :currency "usd"
+                                                          :id "newbie"})})
+                                        :get (fn [req]
+                                               {:status 200
+                                                :headers {}
+                                                :body (generate-string
+                                                        {:data [{:name "Monthly"
+                                                                 :interval "month"
+                                                                 :id "test1"}
+                                                                {:name "Weekly"
+                                                                 :interval "week"
+                                                                 :id "test2"}]})})}
+     #"https://api.stripe.com/v1/plans/(.+)" {:get (fn [req]
+                                                     {:status 200
+                                                      :headers {}
+                                                      :body (generate-string
+                                                              {:id "newbie"})})
+                                              :post (wrap-fix-body
+                                                      (wrap-params
+                                                        (fn [req]
+                                                          {:status 200
+                                                           :headers {}
+                                                           :body (generate-string
+                                                                   {:id "newbie"
+                                                                    :name "New plan name"})})))
+                                              :delete (fn [req]
+                                                        {:status 200
+                                                         :headers {}
+                                                         :body (generate-string
+                                                                 {:deleted true
+                                                                  :id "newbie"})})}}
+    (fact "creates a new plan"
+      (let [params {:id "newbie" :amount 1000 :currency "usd" :interval "month" :name "Newbie Plan"}
+            plan (plan/create params)]
+        (:id plan) => (:id params)
+        (:amount plan) => (:amount params)
+        (:currency plan) => (:currency params)
+        (:name plan) => (:name params)))
+    (fact "retrieves a plan"
+      (let [plan-id "newbie"
+            response (plan/retrieve plan-id)]
+        (:id response) => plan-id))
+    (fact "updates a plan"
+      (let [params {:name "New plan name"}
+            plan-id "newbie"
+            response (plan/update plan-id params)]
+        (:name response) => (:name params)))
+    (fact "lists all plans"
+      (let [response (plan/list-all)]
+        (count (:data response))) => 2)
+    (fact "deletes an existing plan"
+      (let [plan-id "newbie"
+            response (plan/delete plan-id)]
+        (:id response) => plan-id))))
 
 ;; TODO: Implement Subscriptions Endpoint Tests
 (comment (facts "Subscriptions Endpoint"
