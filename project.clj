@@ -11,4 +11,5 @@
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [clj-http-fake "0.7.8"]
                                   [ring/ring-core "1.3.0"]]
-                   :plugins [[lein-midje "3.1.3"]]}})
+                   :plugins [[lein-midje "3.1.3"]
+                             [lein-marginalia "0.7.1"]]}})

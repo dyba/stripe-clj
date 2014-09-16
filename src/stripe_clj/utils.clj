@@ -56,8 +56,3 @@
     (if valid?
       (-> response :body (parse-string str->spear-cased-keyword))
       (parse-string response))))
-
-(comment (defn delete-operation
-           [path]
-           (fn [& opts]
-             (api-request :delete path opts))))
