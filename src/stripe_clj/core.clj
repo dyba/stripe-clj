@@ -7,7 +7,7 @@
             [stripe-clj.card :as card]
 ;;            [stripe-clj.refund :as refund]
 ;;            [stripe-clj.charge :as charge]
-;;            [stripe-clj.event :as event]
+            [stripe-clj.event :as event]
             [stripe-clj.token :as token]
             [stripe-clj.account :as account]))
 
@@ -66,8 +66,8 @@
 
 ;; Event API
 
-;; (def retrieve-event event/retrieve)
-;; (def list-all-events event/list-all)
+(def retrieve-event event/retrieve)
+(def list-all-events event/list-all)
 
 ;; Refund API
 
